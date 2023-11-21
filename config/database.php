@@ -14,7 +14,7 @@ class Database{
     private function __construct()
     {
         try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+            $this->conn = new PDO("pgsql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
         } catch (PDOException $e) {
             echo "Connection error: " . $e->getMessage();
         }

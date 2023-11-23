@@ -70,7 +70,7 @@ class User
         // to get time stamp for 'created' field
         $this->created = date('Y-m-d H:i:s');
         // insert query
-$query = "INSERT INTO " . $this->table_name . " 
+        $query = "INSERT INTO " . $this->table_name . " 
           (firstname, lastname, email, contact_number, address, password, access_level, status, created)
           VALUES
           (:firstname, :lastname, :email, :contact_number, :address, :password, :access_level, :status, :created)";
@@ -112,5 +112,48 @@ $query = "INSERT INTO " . $this->table_name . "
         echo "<pre>";
         print_r($stmt->errorInfo());
         echo "</pre>";
+    }
+
+    // read all user records
+    function readAll($from_record_num, $records_per_page)
+    {
+        // query to read all user records, with limit clause for pagination
+        $query = "SELECT
+        id,
+        firstname,
+        lastname,
+        email,
+        contact_number,
+        access_level,
+        created
+    FROM
+        " . $this->table_name . "
+    ORDER BY
+        id DESC
+    LIMIT :limit OFFSET :offset;";
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // bind limit clause variables
+        $stmt->bindParam(2, $from_record_num, PDO::PARAM_INT);
+        $stmt->bindParam(1, $records_per_page, PDO::PARAM_INT);
+        // execute query
+        $stmt->execute();
+        // return values
+        return $stmt;
+    }
+
+    // used for paging users
+    public function countAll()
+    {
+        // query to select all user records
+        $query = "SELECT id FROM " . $this->table_name . "";
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        // get number of rows
+        $num = $stmt->rowCount();
+        // return row count
+        return $num;
     }
 }
